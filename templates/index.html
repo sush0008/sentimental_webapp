@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Sentiment Analysis Web App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body{font-family: Arial, Helvetica, sans-serif; max-width:900px; margin:40px auto; padding:20px;}
+    .card{border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.08); padding:20px; margin-bottom:20px;}
+    textarea{width:100%; min-height:140px; font-size:16px; padding:10px;}
+    button{padding:10px 16px; font-size:16px; border-radius:6px; cursor:pointer;}
+    .result {margin-top:10px; font-weight:600;}
+    .positive {color: #067d34;}
+    .negative {color: #bf2f2f;}
+    .neutral {color: #444;}
+    .small {font-size:13px; color:#666;}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Sentiment Analysis</h1>
+    <p class="small">Type text below and click <strong>Analyze</strong>. Model: <em>distilbert-base-uncased-finetuned-sst-2-english</em></p>
+
+    <textarea id="inputText" placeholder="Type your sentence here...">{{ input_text if input_text else '' }}</textarea>
+    <div style="margin-top:10px;">
+      <button id="analyzeBtn">Analyze</button>
+      <button id="clearBtn" style="margin-left:8px;">Clear</button>
+    </div>
+
+    <div id="output" class="result">
+      {% if result %}
+        <div>Label: <span class="{{ 'positive' if result.label == 'POSITIVE' else 'negative' }}">{{ result.label }}</span></div>
+        <div>Confidence: {{ (result.score * 100) | round(2) }}%</div>
+      {% elif error %}
+        <div style="color:red;">{{ error }}</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="card small">
+    <h3>API Usage</h3>
+    <pre>
+POST /api/predict
+Content-Type: application/json
+{"text":"I love this project!"}
+    </pre>
+  </div>
+
+  <script src="/static/main.js"></script>
+</body>
+</html>
